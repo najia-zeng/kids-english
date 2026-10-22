@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>英语背诵 · 初一七上</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='10' width='52' height='44' rx='8' fill='%23fdfbf4' stroke='%23f08a5c' stroke-width='3'/%3E%3Cpath d='M20 26 h24 M20 34 h24 M20 42 h14' stroke='%237fbb63' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#3e3b35; --sub:#7c7a6c; --line:#eae4d6; --paper:#fdfbf4; --panel:#ffffff;
+    --spring:#7fbb63; --summer:#4fa8cc; --autumn:#e39a54; --winter:#7fa3c4;
+    --accent:#f08a5c; --accent-bg:#ffe9dc; --accent2:#6fb3e8; --accent3:#6fc9a8;
+    --nav-bg:#f6f1e8; --nav-ink:#57503f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;}
+  img{display:block;}
+
+  /* ===== 布局：左导航 + 主区 ===== */
+  .layout{display:flex;min-height:100vh;}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:252px;background:var(--nav-bg);border-right:1px solid var(--line);padding:22px 14px 26px;overflow-y:auto;z-index:50;}
+  .main{flex:1;margin-left:252px;min-width:0;}
+
+  .brand{display:flex;align-items:center;gap:10px;padding:0 8px 16px;}
+  .brand .logo{flex:none;width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;}
+  .brand .logo svg{width:20px;height:20px;fill:#fff;}
+  .brand .t1{font-size:16px;font-weight:800;letter-spacing:.02em;line-height:1.25;}
+  .brand .t2{font-size:11.5px;color:var(--sub);}
+
+  .nav-group{margin-bottom:18px;}
+  .nav-group h2{font-size:11.5px;letter-spacing:.14em;color:#a69d89;padding:0 10px 8px;font-weight:700;}
+  .nav-item{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:10px 12px;border-radius:11px;font-size:14px;color:var(--nav-ink);min-height:44px;transition:background .15s;}
+  .nav-item svg{flex:none;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+  .nav-item:hover{background:#f2ebdd;}
+  .nav-item.active{background:var(--accent);color:#fff;font-weight:600;}
+  .nav-item .badge{margin-left:auto;font-size:11px;color:#a69d89;flex:none;}
+  .nav-item.active .badge{color:rgba(255,255,255,.8);}
+  .nav-item .sub{font-size:11px;color:#a69d89;flex:none;}
+  .nav-item.active .sub{color:rgba(255,255,255,.8);}
+
+  /* 移动端顶栏 */
+  .topbar{display:none;position:sticky;top:0;z-index:60;background:var(--nav-bg);border-bottom:1px solid var(--line);padding:8px 12px;}
+  .topbar .tb{display:flex;align-items:center;gap:10px;}
+  .hamburger{flex:none;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);}
+  .hamburger svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;}
+  .topbar .t1{font-size:16px;font-weight:800;}
+
+  .scrim{display:none;position:fixed;inset:0;background:rgba(58,55,46,.45);z-index:40;}
+  body.nav-open .scrim{display:block;}
+  body.nav-open .sidebar{transform:none;}
+
+  /* ===== 内容区通用 ===== */
+  .content{padding:26px 22px 60px;max-width:920px;margin:0 auto;}
+  .view-head{margin-bottom:18px;}
+  .view-head .kicker{display:flex;align-items:center;gap:8px;font-size:12.5px;letter-spacing:.16em;color:var(--accent);font-weight:600;margin-bottom:8px;}
+  .view-head .kicker::before{content:"";width:24px;height:1.5px;background:var(--accent);}
+  .view-head h1{font-size:clamp(24px,4.4vw,34px);font-weight:800;line-height:1.2;}
+  .view-head p{font-size:13.5px;color:var(--sub);margin-top:6px;max-width:62ch;}
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 11px;font-size:12.5px;color:var(--sub);display:flex;gap:9px;align-items:flex-start;}
+  .step b{color:var(--ink);font-weight:700;display:block;}
+  .step .n{flex:none;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .playall{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;transition:background .2s,transform .15s;min-height:44px;}
+  .playall:hover{background:#e07a4c;transform:translateY(-1px);}
+  .playall.playing{background:var(--accent2);}
+  .playall svg{width:15px;height:15px;fill:currentColor;}
+
+  /* tabs（单元短句切换） */
+  .tabs{display:flex;gap:8px;margin:4px 0 18px;flex-wrap:wrap;}
+  .tab{min-height:44px;padding:9px 16px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:13.5px;color:var(--sub);font-weight:600;transition:all .15s;}
+  .tab:hover{border-color:var(--accent);color:var(--accent);}
+  .tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* 课文 */
+  .lead{margin:6px 0 10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px;}
+  .lead .tag{display:inline-block;font-size:12px;letter-spacing:.1em;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 10px;margin-bottom:10px;}
+  .lead .en{font-size:16px;font-weight:700;line-height:1.6;}
+  .lead .cn{font-size:13.5px;color:var(--sub);margin-top:6px;}
+  .lead .pill{display:inline-block;font-size:12px;color:#8c6239;background:var(--accent-bg);border-radius:999px;padding:2px 10px;margin-top:10px;}
+  section.season{margin-top:30px;}
+  .season-head{position:relative;border-radius:18px;overflow:hidden;height:140px;margin-bottom:12px;}
+  .season-head img{width:100%;height:100%;object-fit:cover;object-position:center;}
+  .season-head::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,35,25,.05) 0%,rgba(30,35,25,.55) 78%);}
+  .season-cap{position:absolute;left:16px;bottom:12px;color:#fff;z-index:2;}
+  .season-cap .en{font-size:21px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.35);}
+  .season-cap .cn{font-size:12.5px;opacity:.92;}
+  .seg{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:11px;overflow:hidden;}
+  .seg-head{display:flex;align-items:center;gap:12px;padding:12px 14px 0;}
+  .seg .no{flex:none;width:26px;height:26px;border-radius:8px;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .seg .where{font-size:12px;color:var(--sub);}
+  .seg-body{padding:7px 14px 11px;}
+  .seg .en{font-size:14.5px;font-weight:600;line-height:1.8;}
+  .seg .en mark{background:transparent;color:inherit;text-decoration:underline;text-decoration-thickness:2.5px;text-underline-offset:3px;font-weight:800;}
+  .seg .cn{font-size:13px;color:var(--sub);margin-top:6px;}
+  .seg .phrases{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+  .seg .phrases span{font-size:11.5px;color:#8a6236;background:#fbf0e0;border-radius:999px;padding:2px 9px;}
+  .player{display:flex;align-items:center;gap:10px;margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);}
+  .playbtn{flex:none;width:40px;height:40px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .12s;}
+  .playbtn:active{transform:scale(.94);}
+  .playbtn svg{width:16px;height:16px;fill:currentColor;}
+  .ptrack{flex:1;height:4px;border-radius:2px;background:#efe9de;position:relative;cursor:pointer;}
+  .ptrack .fill{position:absolute;left:0;top:0;bottom:0;width:0%;border-radius:2px;transition:width .2s linear;}
+  .ptime{font-size:11px;color:var(--sub);font-variant-numeric:tabular-nums;flex:none;min-width:34px;text-align:right;}
+  .seg.playing{border-color:transparent;box-shadow:0 0 0 2px var(--pc),0 10px 22px rgba(58,55,46,.10);}
+  .seg.playing .no{background:var(--pc);}
+  .lead.playing{border-color:transparent;box-shadow:0 0 0 2px var(--accent),0 10px 22px rgba(58,55,46,.10);}
+
+  /* 短语 / 句型列表 */
+  .plist{display:grid;grid-template-columns:1fr;gap:10px;}
+  .pitem{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px 13px;}
+  .pitem .pno{flex:none;width:26px;height:26px;border-radius:8px;background:#f5edde;color:#9a8b62;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .pitem .ptxt{flex:1;min-width:0;}
+  .pitem .pen{font-size:14.5px;font-weight:600;line-height:1.5;}
+  .pitem .pzh{font-size:12.5px;color:var(--sub);margin-top:2px;}
+  .pitem.star{border-color:#ffd9c2;background:#fff6ef;}
+  .pitem.star .pno{background:var(--accent);color:#fff;}
+  .starflag{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:#c2703f;background:var(--accent-bg);border-radius:999px;padding:1px 8px;margin-left:6px;vertical-align:2px;font-weight:700;}
+  .pitem .miniplayer{flex:none;display:flex;align-items:center;gap:8px;min-width:112px;}
+  .miniplayer .mbtn{flex:none;width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .12s;}
+  .miniplayer .mbtn:active{transform:scale(.94);}
+  .miniplayer .mbtn svg{width:15px;height:15px;fill:currentColor;}
+  .miniplayer .mt{font-size:10.5px;color:var(--sub);font-variant-numeric:tabular-nums;}
+
+  /* 语法 */
+  .grammar-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden;}
+  .grammar-card>h2{font-size:15px;font-weight:800;padding:13px 16px;background:#faf3e9;border-bottom:1px solid var(--line);}
+  .grammar-card .gb{padding:6px 16px 14px;}
+  .grule{padding:12px 0;border-bottom:1px dashed var(--line);}
+  .grule:last-child{border-bottom:none;}
+  .grule h3{font-size:13.5px;font-weight:700;color:var(--accent);margin-bottom:6px;display:flex;gap:6px;align-items:center;}
+  .grule h3 svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .grule .gex{font-size:13px;color:var(--sub);line-height:1.9;}
+  .grule .gex em{font-style:normal;color:var(--ink);font-weight:600;}
+  .grule .gex i{font-style:normal;color:var(--ink);}
+
+  /* 复习条 / footer */
+  .review{margin:34px 0 14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px 16px;}
+  .review h2{font-size:14.5px;font-weight:800;margin-bottom:3px;}
+  .review p{font-size:12.5px;color:var(--sub);}
+  .rev-steps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px;}
+  .rev-steps div{font-size:12px;color:var(--sub);background:#f7f2e8;border-radius:10px;padding:8px 10px;}
+  .rev-steps b{color:var(--ink);}
+  footer{padding:14px 0 30px;font-size:12px;color:var(--sub);text-align:center;}
+
+  /* ===== 响应式 ===== */
+  @media (min-width:1024px){
+    .steps{grid-template-columns:repeat(4,1fr);}
+    .rev-steps{grid-template-columns:repeat(4,1fr);}
+    .season-head{height:185px;}
+    .seg .en{font-size:15.5px;}
+  }
+  @media (max-width:1023px){
+    .sidebar{transform:translateX(-105%);transition:transform .22s ease;}
+    .topbar{display:block;}
+    .main{margin-left:0;}
+    .content{padding:18px 14px 50px;}
+    .steps{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:520px){
+    .pitem{flex-wrap:wrap;}
+    .miniplayer{width:100%;justify-content:flex-end;padding-top:4px;}
+    .steps{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb">
+    <button class="hamburger" id="hamburger" aria-label="打开导航">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <div class="t1">英语背诵 · 初一</div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="logo"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span>
+      <div>
+        <div class="t1">英语背诵</div>
+        <div class="t2">初一 · 七年级上册</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <h2>课文背诵</h2>
+      <div id="navLessons"></div>
+    </div>
+
+    <div class="nav-group">
+      <h2>常用短句</h2>
+      <div id="navUnits"></div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main">
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var COLORS = {spring:"#7fbb63", summer:"#4fa8cc", autumn:"#e39a54", winter:"#7fa3c4"};
+  var A = function(f){ return "assets/" + f; };
+
+  /* ================= 数据（按单元组织，新增单元时在此追加） ================= */
+  var LESSONS = [
+    {
+      id:"lesson1", no:1, unit:"Unit 1", title:"What is your new friend like?", titleZh:"你的新朋友是什么样的人",
+      color:"#4fa8cc",
+      kicker:"课文背诵 · 第一课", intro:"第一单元课文，共 7 段，每段 2~3 句。先听音频磨耳朵，再看英文跟读，然后遮住英文、看着中文说英文，最后合上材料背诵。划线短语是重点搭配，背课文先背搭配。",
+      groups:[
+        {key:"g1", en:"Meet a new friend", cn:"新朋友 · 认识李华", img:"u1-g1.jpg"},
+        {key:"g2", en:"Share and play", cn:"分享与陪伴 · 一起玩耍", img:"u1-g2.jpg"},
+        {key:"g3", en:"What friendship brings", cn:"友谊的收获", img:"u1-g3.jpg"}
+      ],
+      segs:[
+        {group:"g1", no:1, en:"I love my new school! I have <mark>made</mark> a lot of new friends there. Li Hua is one of them.", cn:"我爱我的新学校！我在那里交了很多新朋友。李华就是其中之一。", phrases:["make friends 交朋友"], file:"u1-01.wav"},
+        {group:"g1", no:2, en:"Li Hua is helpful and <mark>patient</mark>. He is also <mark>good at maths</mark>. When I meet difficult maths problems, I <mark>turn to him for help</mark>.", cn:"李华乐于助人而且有耐心。他还擅长数学。当我遇到难的数学题时，我向他求助。", phrases:["patient 有耐心的","be good at 擅长……","turn to sb. for help 向某人求助"], file:"u1-02.wav"},
+        {group:"g2", no:3, en:"When something interesting happens to me, I <mark>share my happiness with him</mark>. When one of us feels sad, we tell <mark>the other</mark> one and this makes us feel better.", cn:"当有趣的事情发生在我身上时，我和他分享我的快乐。当我们中有人难过时，我们会告诉另一个人，这让我们感觉好多了。", phrases:["share sth. with sb. 和某人分享","the other 另一个（两者中的另一个）"], file:"u1-03.wav"},
+        {group:"g2", no:4, en:"We really like doing things together. Li Hua loves playing ping-pong with me after school. \"It's fun to play with a good player like you,\" he says.", cn:"我们真的很喜欢一起做事。李华喜欢放学后和我一起打乒乓球。\"和你这样的好球员打球真有趣，\"他说。", phrases:["play ping-pong 打乒乓球","It's fun to do sth. 做某事很有趣"], file:"u1-04.wav"},
+        {group:"g3", no:5, en:"<mark>With his help</mark>, my maths has improved a lot. I am also more confident now, and I have the courage to <mark>try new things</mark>.", cn:"在他的帮助下，我的数学进步了很多。我现在也更自信了，而且有勇气尝试新事物。", phrases:["with one's help 在某人的帮助下","try new things 尝试新事物"], file:"u1-05.wav"},
+        {group:"g3", no:6, en:"My parents also tell me that I am more open and willing to help than before. Close friends can really help us in our lives!", cn:"我父母还告诉我，我比以前更开朗、更愿意帮助别人了。亲密的朋友真的能在生活中帮助我们！", phrases:["be willing to do sth. 愿意做某事","close friends 亲密的朋友"], file:"u1-06.wav"},
+        {group:"g3", no:7, en:"My <mark>friendship</mark> with Li Hua teaches me a lot of things. Friendships are not only about having fun, but also about love, honesty, <mark>understanding</mark> and <mark>trust</mark>.", cn:"我和李华的友谊教会了我很多。友谊不仅仅是开心有趣，还关乎爱、诚实、理解和信任。", phrases:["friendship 友谊","not only... but also 不仅……而且","have fun 玩得开心"], file:"u1-07.wav"}
+      ]
+    },
+    {
+      id:"lesson2", no:2, unit:"Unit 2", title:"My school day", titleZh:"我的学校生活",
+      color:"#e39a54",
+      kicker:"课文背诵 · 第二课", intro:"第二单元课文，共 10 段，每段 2~3 句。先听音频磨耳朵，再看英文跟读，然后遮住英文、看着中文说英文，最后合上材料背诵。划线短语是重点搭配，背课文先背搭配。",
+      groups:[
+        {key:"g1", en:"Class time", cn:"上课 · 一天的学习", img:"u2-g1.jpg"},
+        {key:"g2", en:"Morning break", cn:"课间休息", img:"u2-g2.jpg"},
+        {key:"g3", en:"Lunch break", cn:"午休时光", img:"u2-g3.jpg"},
+        {key:"g4", en:"After school", cn:"放学之后", img:"u2-g4.jpg"}
+      ],
+      segs:[
+        {group:"g1", no:1, en:"My name is Li Hua. I <mark>started junior high school</mark> this September. I have a lot to say about my time there!", cn:"我叫李华。今年九月我上了初中。关于我在那里的时光，我有好多话要说！", phrases:["start junior high school 开始上初中"], file:"u2-01.wav"},
+        {group:"g1", no:2, en:"Classes start at 8:00 a.m. I have seven classes each day, four in the morning and three in the afternoon.", cn:"早上八点开始上课。我每天有七节课，上午四节，下午三节。", phrases:["seven classes each day 每天七节课","in the morning / in the afternoon 上午 / 下午"], file:"u2-02.wav"},
+        {group:"g1", no:3, en:"Geography is a new subject in junior high. The teacher sometimes teaches us by playing games. It's a great way to learn.", cn:"地理是初中的一门新科目。老师有时通过做游戏来教我们。这是一种很好的学习方法。", phrases:["a new subject 新科目","by doing sth. 通过做某事","a great way to learn 很好的学习方法"], file:"u2-03.wav"},
+        {group:"g2", no:4, en:"Morning break starts at 9:40 a.m., and I run to the sports ground. I often do some morning exercise, or play a ball game with my friends.", cn:"上午九点四十开始课间休息，我跑向运动场。我经常做些晨练，或者和朋友打球。", phrases:["morning break 课间休息","do morning exercise 做晨练"], file:"u2-04.wav"},
+        {group:"g2", no:5, en:"The break ends at 10:10 a.m. How short it is!", cn:"休息在十点十分结束。真短啊！", phrases:["How short it is! 真短啊！（感叹句）"], file:"u2-05.wav"},
+        {group:"g3", no:6, en:"We have a lunch break <mark>from 12:00 p.m. to 2:00 p.m.</mark> We go to the canteen for lunch. There are different foods I can choose from.", cn:"我们从中午十二点到下午两点有午休。我们去食堂吃午饭。那里有不同种类的食物可以选。", phrases:["from... to... 从……到……","go to the canteen 去食堂","choose from 从中选择"], file:"u2-06.wav"},
+        {group:"g3", no:7, en:"I really enjoy eating there! After that, I usually go to the book corner in the classroom. I can always find something interesting to read.", cn:"我真的喜欢在那里吃饭！之后，我通常去教室里的图书角。我总能找到一些有趣的东西来读。", phrases:["enjoy doing sth. 喜欢做某事","the book corner 图书角"], file:"u2-07.wav"},
+        {group:"g4", no:8, en:"Classes end at 4:25 p.m., and many students <mark>take part in after-school activities</mark>. I go to the Ping-pong Club with my friend Chen Ming.", cn:"下午四点二十五下课，很多学生参加课后活动。我和朋友陈明去乒乓球俱乐部。", phrases:["take part in 参加","after-school activities 课后活动"], file:"u2-08.wav"},
+        {group:"g4", no:9, en:"We plan to <mark>take part in</mark> the school ping-pong game next month. We <mark>look forward to it</mark> and will practise very hard.", cn:"我们计划下个月参加学校的乒乓球比赛。我们很期待，会努力练习。", phrases:["look forward to 期待……","practise very hard 努力练习"], file:"u2-09.wav"},
+        {group:"g4", no:10, en:"It's exciting to be a junior high student. I have a good time at school, and I enjoy every minute of it.", cn:"成为初中生真令人兴奋。我在学校过得很开心，享受每一分钟。", phrases:["It's exciting to do sth. 做某事令人兴奋","have a good time 玩得开心"], file:"u2-10.wav"}
+      ]
+    },
+    {
+      id:"lesson3", no:3, unit:"Unit 3", title:"The Four Seasons", titleZh:"四季",
+      kicker:"课文背诵 · 第三课", intro:"第三课课文，共 12 段，每段 2~3 句。先听音频磨耳朵，再看英文跟读，然后遮住英文、看着中文说英文，最后合上材料背诵。划线短语是重点搭配，背课文先背搭配。",
+      lead:{en:"There are four seasons in a year, and each season has its <mark>special features</mark>.", cn:"一年有四个季节，每个季节都有它的特征。", phrases:["special features 特征"], file:"audio-01.wav", tag:"开场 · 记住它"},
+      segs:[
+        {season:"spring", no:2,  en:"<mark>Life begins again</mark> in spring. The snow melts, and nature <mark>wakes up</mark> after the long winter.", cn:"生命在春天重新开始。积雪融化，大自然从漫长的冬天中苏醒。", phrases:["life begins again 生命重新开始","wake up 苏醒"], file:"audio-02.wav"},
+        {season:"spring", no:3,  en:"Warm rain falls on the forests and fields. Plants start to grow, and birds <mark>come back from the south</mark>.", cn:"温暖的雨水落在森林和田野上。植物开始生长，鸟儿从南方飞回来。", phrases:["come back from the south 从南方飞回来"], file:"audio-03.wav"},
+        {season:"spring", no:4,  en:"Farmers begin to <mark>work their land</mark>. It is a time of new life and new hope. <mark>It is exciting to take a trip in the countryside</mark> in springtime.", cn:"农民开始耕作土地。这是充满新生命和新希望的季节。春天去乡下郊游令人兴奋。", phrases:["work their land 耕作土地","It is exciting to do sth. 做某事令人兴奋","take a trip in the countryside 去乡下郊游"], file:"audio-04.wav"},
+        {season:"summer", no:5,  en:"Summer is bright and noisy. The weather is hot.", cn:"夏天明亮又热闹。天气炎热。", phrases:[], file:"audio-05.wav"},
+        {season:"summer", no:6,  en:"The sun <mark>shines brightly</mark> in the clear, blue sky. Cicadas sing loudly.", cn:"太阳在晴朗的蓝天里明亮地照耀着。蝉大声鸣叫。", phrases:["shine brightly 明亮地照耀"], file:"audio-06.wav"},
+        {season:"summer", no:7,  en:"There is often <mark>thunder and lightning</mark> in the afternoon. Many people like to <mark>go to the beach</mark> and swim in the sea. <mark>It is nice to eat</mark> ice cream or fresh fruit in summer.", cn:"午后常有雷电。很多人喜欢去海滩游泳。夏天吃冰淇淋或新鲜水果很舒服。", phrases:["thunder and lightning 雷电","go to the beach 去海滩","It is nice to do sth. 做某事很好"], file:"audio-07.wav"},
+        {season:"autumn", no:8,  en:"Autumn is beautiful and <mark>full of colour</mark>. The weather is cool and dry.", cn:"秋天美丽而色彩丰富。天气凉爽干燥。", phrases:["full of colour 色彩丰富"], file:"audio-08.wav"},
+        {season:"autumn", no:9,  en:"In autumn, everything changes. Leaves <mark>turn brown, red or yellow</mark> and start falling from the trees. Squirrels <mark>gather food</mark> for the cold winter.", cn:"秋天里一切都变了：树叶变成棕色、红色或黄色，开始从树上飘落。松鼠为寒冷的冬天采集食物。", phrases:["turn + 颜色 变成……","gather food 收集食物"], file:"audio-09.wav"},
+        {season:"autumn", no:10, en:"Farmers <mark>are busy with</mark> the harvest. It is great to <mark>go on a family outing</mark> at this time of year.", cn:"农民们忙着收获。每年这个时候全家一起出游特别好。", phrases:["be busy with 忙于……","go on a family outing 全家一起远足"], file:"audio-10.wav"},
+        {season:"winter", no:11, en:"Winter is peaceful and fun. It is cold and snowy in many places.", cn:"冬天宁静又有趣。许多地方寒冷多雪。", phrases:[], file:"audio-11.wav"},
+        {season:"winter", no:12, en:"Bears and snakes find warm places to <mark>sleep through the winter</mark>. Children love winter because they love to <mark>play in the snow</mark>.", cn:"熊和蛇会找温暖的地方睡过整个冬天。孩子们爱冬天，因为他们喜欢玩雪。", phrases:["sleep through the winter 睡过整个冬天（冬眠）","play in the snow 玩雪"], file:"audio-12.wav"}
+      ],
+      imgs:{spring:"spring.jpg", summer:"summer.jpg", autumn:"autumn.jpg", winter:"winter.jpg"}
+    }
+  ];
+
+  var UNIT_PHRASES = {
+    "U3": {
+      label:"Unit 3 短句",
+      phrases:[
+        {en:"have picnics", zh:"野餐", file:"p01.wav", star:false},
+        {en:"special features", zh:"特征", file:"p02.wav", star:false},
+        {en:"start / begin to do sth.", zh:"开始做某事", file:"p03.wav", star:false},
+        {en:"work one's land", zh:"耕种土地", file:"p04.wav", star:false},
+        {en:"take a trip = go on a trip", zh:"去旅行", file:"p05.wav", star:false},
+        {en:"thunder and lightning", zh:"电闪雷鸣", file:"p06.wav", star:false},
+        {en:"go to the beach", zh:"去海滩", file:"p07.wav", star:false},
+        {en:"be full of = be filled with", zh:"充满", file:"p08.wav", star:false},
+        {en:"turn brown", zh:"变成棕色", file:"p09.wav", star:false},
+        {en:"gather food", zh:"采集食物", file:"p10.wav", star:false},
+        {en:"be busy with sth. = be busy doing sth.", zh:"忙于做某事", file:"p11.wav", star:false},
+        {en:"go on a family outing", zh:"全家一起远足", file:"p12.wav", star:false},
+        {en:"at this time of year", zh:"在一年的这个时候", file:"p13.wav", star:false},
+        {en:"sleep through the winter", zh:"酣睡度过冬天", file:"p14.wav", star:true},
+        {en:"play in the snow", zh:"在雪地里玩", file:"p15.wav", star:false},
+        {en:"go skiing", zh:"去滑雪", file:"p16.wav", star:false},
+        {en:"the best time to do sth.", zh:"做某事的最佳时间", file:"p17.wav", star:false},
+        {en:"outdoor activities", zh:"户外活动", file:"p18.wav", star:false},
+        {en:"go hiking", zh:"去远足 / 徒步", file:"p19.wav", star:false},
+        {en:"keep sb. / sth. adj.", zh:"保持某人 / 某物……", file:"p20.wav", star:false},
+        {en:"smell nice", zh:"闻起来香", file:"p21.wav", star:false},
+        {en:"on a hot day", zh:"在炎热的一天", file:"p22.wav", star:false},
+        {en:"build sandcastles", zh:"堆沙堡", file:"p23.wav", star:true},
+        {en:"solar term", zh:"节气", file:"p24.wav", star:false},
+        {en:"in fact", zh:"事实上", file:"p25.wav", star:false},
+        {en:"be divided into", zh:"被分成……", file:"p26.wav", star:false},
+        {en:"be based on", zh:"基于……", file:"p27.wav", star:false},
+        {en:"start with", zh:"以……开始", file:"p28.wav", star:false},
+        {en:"play an important part in", zh:"在……上发挥重要作用", file:"p29.wav", star:false},
+        {en:"in different ways", zh:"以不同的方式", file:"p30.wav", star:false}
+      ],
+      sentences:[
+        {en:"It is a time of new life and new hope.", zh:"这是新生命和新希望的时期。", note:"It is a time of ... 意为「这是一个……的时期」。", file:"s01.wav", star:false},
+        {en:"It's the most popular time to go hiking.", zh:"这是去远足的最热门时期。", note:"句型：the most popular time to do sth. 做某事的最热门时期", file:"s02.wav", star:true},
+        {en:"For example, they help farmers decide when to plant their crops.", zh:"例如，它们帮助农民决定何时播种。", note:"help sb. (to) do sth. / help sb. with sth. 帮助某人做某事", file:"s03.wav", star:false},
+        {en:"People celebrated these days in different ways in the past, such as eating special local dishes.", zh:"在过去，人们以不同的方式庆祝这些日子，比如吃特色的当地菜肴。", note:"such as 用于举例，后接名词或动名词（doing），不能接句子；对比 for example（后接逗号，可接句子）", file:"s04.wav", star:true}
+      ],
+      grammar:[
+        {title:"（一）名词变形容词", rules:[
+          {head:"直接加 -y", items:[{en:"snow 雪 → <i>snowy</i> 下雪的", cn:null},{en:"cloud 云 → <i>cloudy</i> 多云的", cn:null}]},
+          {head:"重读闭音节，双写末尾辅音字母再加 -y", items:[{en:"sun 太阳 → <i>sunny</i> 阳光充足的", cn:null},{en:"fog 雾 → <i>foggy</i> 有雾的", cn:null}]},
+          {head:"以不发音字母 -e 结尾，去掉 e 再加 -y", items:[{en:"noise 响声 → <i>noisy</i> 吵闹的", cn:null},{en:"smoke 烟 → <i>smoky</i> 多烟的", cn:null}]}
+        ]},
+        {title:"（二）形容词的常见用法", rules:[
+          {head:"定语：形容词 + 名词（修饰名词）", items:[{en:"a comfortable holiday", cn:"舒适的假期"},{en:"a wonderful trip", cn:"精彩的旅行"},{en:"an exciting movie", cn:"激动人心的电影"}]},
+          {head:"表语：主语 + 系动词 + 形容词（主系表结构）", items:[{en:"Spring is wet and rainy.", cn:"春天又湿又多雨。"},{en:"Leaves turn yellow and brown in autumn.", cn:"秋天树叶变成黄色和棕色。"},{en:"Days get shorter and shorter in winter.", cn:"冬天白天越来越短。"}]},
+          {head:"It is adj. (for sb.) to do sth.（It 是形式主语）", items:[{en:"It is exciting to play on the beach in summer.", cn:"夏天在海滩上玩很兴奋。"},{en:"It is nice to take a trip in autumn.", cn:"秋天去旅行很好。"}]}
+        ]}
+      ]
+    },
+    "U1": {
+      label:"Unit 1 短句",
+      phrases:[
+        {en:"be good at = do well in", zh:"擅长", file:"u1p01.wav", star:false},
+        {en:"turn to sb. for help", zh:"求助于某人", file:"u1p02.wav", star:false},
+        {en:"after school", zh:"放学后", file:"u1p03.wav", star:false},
+        {en:"be willing to do sth.", zh:"愿意做某事", file:"u1p04.wav", star:false},
+        {en:"medium height", zh:"中等身高", file:"u1p05.wav", star:false},
+        {en:"modern dance", zh:"现代舞", file:"u1p06.wav", star:false},
+        {en:"watch over", zh:"照管；监督", file:"u1p07.wav", star:false},
+        {en:"rise into", zh:"上升到", file:"u1p08.wav", star:false},
+        {en:"cry out", zh:"大喊；大叫", file:"u1p09.wav", star:false},
+        {en:"cry oneself to sleep", zh:"哭着入睡", file:"u1p10.wav", star:false},
+        {en:"wake up", zh:"醒来", file:"u1p11.wav", star:false},
+        {en:"come and go", zh:"来去", file:"u1p12.wav", star:false},
+        {en:"take one's place", zh:"替代某人", file:"u1p13.wav", star:false},
+        {en:"come along", zh:"出现", file:"u1p14.wav", star:false},
+        {en:"take care of = look after = care for", zh:"照顾", file:"u1p15.wav", star:false},
+        {en:"like doing / to do sth.", zh:"喜欢做某事", file:"u1p16.wav", star:false},
+        {en:"cheer up", zh:"（使）振作起来", file:"u1p17.wav", star:false},
+        {en:"not only ... but also ...", zh:"不仅……而且……", file:"u1p18.wav", star:false},
+        {en:"make friends with sb.", zh:"与某人交朋友", file:"u1p19.wav", star:false},
+        {en:"agree with sb.", zh:"同意某人的观点", file:"u1p20.wav", star:false},
+        {en:"share sth. with sb.", zh:"与某人分享某物", file:"u1p21.wav", star:false},
+        {en:"with one's help = with the help of sb.", zh:"在某人的帮助下", file:"u1p22.wav", star:false},
+        {en:"get along with", zh:"与……相处", file:"u1p23.wav", star:false},
+        {en:"role model", zh:"榜样；楷模", file:"u1p24.wav", star:false},
+        {en:"wait for", zh:"等待", file:"u1p25.wav", star:false},
+        {en:"thanks to", zh:"多亏；由于", file:"u1p26.wav", star:false},
+        {en:"take place", zh:"发生", file:"u1p27.wav", star:false},
+        {en:"talk with / to sb. about sth.", zh:"与某人交谈某事", file:"u1p28.wav", star:false},
+        {en:"each other", zh:"相互；互相", file:"u1p29.wav", star:false},
+        {en:"in one's spare / free time", zh:"在某人的空闲时间", file:"u1p30.wav", star:false}
+      ],
+      grammar:[
+        {title:"（一）特殊疑问句结构", rules:[
+          {head:"wh- + be + 主语 + 其他？", items:[{en:"What is the weather like?", cn:"天气怎么样？"}]},
+          {head:"wh- + do / does + 主语 + 动词原形 + 其他？", items:[{en:"What does he do every Sunday?", cn:"他每个星期天做什么？"}]}
+        ]},
+        {title:"（二）常用疑问词速查表", rules:[
+          {head:"问时间 / 日期 / 人", items:[{en:"when 什么时候", cn:"问时间"},{en:"what time 几点", cn:"问几点钟"},{en:"what day 星期几", cn:"问星期"},{en:"what date 几号", cn:"问日期"},{en:"who 谁", cn:"问人"}]},
+          {head:"问地点 / 选择 / 原因 / 东西", items:[{en:"where 在哪里", cn:"问地点"},{en:"which 哪个", cn:"问选择"},{en:"why 为什么", cn:"问原因"},{en:"what 什么", cn:"问东西 / 事件"},{en:"whose 谁的", cn:"问主人"}]},
+          {head:"how 系列（问方式 / 数量 / 程度）", items:[{en:"how 怎么样", cn:"问情况 / 方式"},{en:"how old 多大年龄", cn:"问年龄"},{en:"how many 多少（+可数名词复数）", cn:"问数量"},{en:"how much 多少（+不可数名词）/ 多少钱", cn:"问数量 / 价钱"},{en:"how heavy 多重", cn:"问重量"},{en:"how far 多远", cn:"问路程"},{en:"how long 多长 / 多长时间", cn:"问长度 / 时间段"},{en:"how often 多久一次", cn:"问频度"},{en:"how soon 多久以后", cn:"问将来时间"}]}
+        ]}
+      ],
+      model:{
+        short:"My new friend",
+        title:"U1 范文 · My new friend（我的新朋友）",
+        intro:"老师划重点的作文范文，共 6 段。跟着音频逐段背熟，考试时能直接套用到写朋友的作文里。",
+        items:[
+          {en:"Hello, I'm Li Hua. Today <mark>I'd like to</mark> introduce my new friend.", cn:"你好，我是李华。今天我想介绍我的新朋友。", phrases:["would like to do sth. 想要做某事"], file:"u1m01.wav"},
+          {en:"My new friend is Alice. She is a 13-year-old girl. We began to know each other on the first day of junior high school.", cn:"我的新朋友是爱丽丝。她是一个 13 岁的女孩。我们在初中开学的第一天就认识了。", phrases:["a 13-year-old girl 一个十三岁的女孩","know each other 互相认识"], file:"u1m02.wav"},
+          {en:"Alice is a short girl with long black hair and a pair of glasses. She is <mark>so smart that</mark> she can answer questions quickly in class. She often gets good grades in exams.", cn:"爱丽丝是个矮个子女孩，留着黑色长发，戴着一副眼镜。她是那么聪明，以至于能在课堂上快速回答问题。她考试经常取得好成绩。", phrases:["so... that... 如此……以至于……","get good grades 取得好成绩"], file:"u1m03.wav"},
+          {en:"Besides, she is a positive girl. When she meets difficulties, she always <mark>keeps a smile on her face</mark> and <mark>never gives up</mark>.", cn:"此外，她是个积极乐观的女孩。遇到困难时，她总是面带微笑，从不放弃。", phrases:["keep a smile on one's face 面带微笑","never give up 永不放弃"], file:"u1m04.wav"},
+          {en:"<mark>In her free time</mark>, she <mark>enjoys reading</mark>. Her dream is to be a writer.", cn:"在空闲时间，她喜欢阅读。她的梦想是成为一名作家。", phrases:["in one's free time 在空闲时间","enjoy doing sth. 喜欢做某事"], file:"u1m05.wav"},
+          {en:"<mark>It is lucky to</mark> be friends with her. I hope we will remain friends forever.", cn:"能和她做朋友是幸运的。我希望我们会永远是朋友。", phrases:["It is adj. to do sth. 做某事是……的","remain friends 一直是朋友"], file:"u1m06.wav"}
+        ]
+      }
+    },
+    "U2": {
+      label:"Unit 2 短句",
+      phrases:[
+        {en:"do the dishes", zh:"洗碗", file:"u2p01.wav", star:false},
+        {en:"junior high school", zh:"初级中学", file:"u2p02.wav", star:false},
+        {en:"take part in", zh:"参加（多指活动、比赛等）", file:"u2p03.wav", star:true},
+        {en:"look forward to doing sth.", zh:"期待；盼望", file:"u2p04.wav", star:true},
+        {en:"daily life", zh:"日常生活", file:"u2p05.wav", star:true},
+        {en:"go to bed", zh:"去睡觉", file:"u2p06.wav", star:false},
+        {en:"get up", zh:"起床", file:"u2p07.wav", star:false},
+        {en:"after-school activities", zh:"课外活动", file:"u2p08.wav", star:true},
+        {en:"do morning exercise", zh:"做早间锻炼", file:"u2p09.wav", star:true},
+        {en:"from ... to ...", zh:"从……到……", file:"u2p10.wav", star:true},
+        {en:"have a good time = enjoy oneself = have fun", zh:"玩得开心", file:"u2p11.wav", star:true},
+        {en:"be different from", zh:"与……不同", file:"u2p12.wav", star:false},
+        {en:"be similar to", zh:"与……相似", file:"u2p13.wav", star:true},
+        {en:"be excited about sth.", zh:"对某事感到兴奋（excited 修饰人，exciting 修饰事物）", file:"u2p14.wav", star:true},
+        {en:"close to", zh:"接近，靠近", file:"u2p15.wav", star:true},
+        {en:"in fact", zh:"事实上", file:"u2p16.wav", star:true},
+        {en:"a member of", zh:"……的一员", file:"u2p17.wav", star:true},
+        {en:"use sth. to do sth.", zh:"用某物做某事", file:"u2p18.wav", star:true},
+        {en:"solve problems", zh:"解决问题", file:"u2p19.wav", star:true},
+        {en:"develop good working habits", zh:"培养良好工作习惯", file:"u2p20.wav", star:false},
+        {en:"learn basic life skills", zh:"学习基本生活技能", file:"u2p21.wav", star:false},
+        {en:"get ready for", zh:"为……做准备", file:"u2p22.wav", star:true},
+        {en:"thank sb. for doing sth.", zh:"感谢某人做了某事", file:"u2p23.wav", star:true},
+        {en:"in time", zh:"及时", file:"u2p24.wav", star:true},
+        {en:"in a great mood", zh:"有好心情", file:"u2p25.wav", star:true},
+        {en:"go well", zh:"进展顺利", file:"u2p26.wav", star:true}
+      ],
+      sentences:[
+        {en:"The teacher sometimes teaches us by playing games.", zh:"老师有时通过做游戏的方式教我们。", note:"by doing sth. 通过做某事（方式状语）", file:"u2s01.wav", star:false},
+        {en:"It's a great way to learn.", zh:"这是一种很好的学习方式。", note:"句型：It's a great / good way to do sth. 这是做某事的好方法。", file:"u2s02.wav", star:false},
+        {en:"How short it is!", zh:"多么短暂啊！", note:"感叹句结构：How + 形容词 + 主语 + 谓语！", file:"u2s03.wav", star:false},
+        {en:"It's exciting to be a junior high school student.", zh:"成为初中生真让人兴奋。", note:"句型：It's + adj. + to do sth. 做某事是……的。", file:"u2s04.wav", star:false},
+        {en:"Thank you for reading my email.", zh:"感谢你读我的邮件。", note:"句型：Thank you for doing sth. 感谢某人做了某事。", file:"u2s05.wav", star:false},
+        {en:"After a rocky start, it was the best day ever!", zh:"在经历了艰难的开始之后，这是前所未有的最美好的一天！", note:"rocky start 艰难的开端；the best day ever 最棒的一天", file:"u2s06.wav", star:false}
+      ],
+      grammar:[
+        {title:"（三）单元语法 · 一般现在时", rules:[
+          {head:"用法", items:[{en:"（原卷这一页未拍全，用法内容等妈妈补发后填写）", cn:null}]}
+        ]}
+      ]
+    }
+  };
+
+  /* ================= 播放器核心 ================= */
+  var audios = {};
+  var entries = {};
+  var queueOrder = [];
+  var playingKey = null;
+  var playAllState = false;
+  var currentView = null;
+  var currentTab = "phrases";
+
+  function fmt(t){ if(!isFinite(t) || t < 0) return "0:00"; var m = Math.floor(t/60), s = Math.floor(t%60); return m + ":" + (s<10?"0":"") + s; }
+
+  function getAudio(key, file){
+    if(!audios[key]){
+      audios[key] = new Audio(A(file));
+      audios[key].preload = "none";
+      var a = audios[key];
+      a.addEventListener("timeupdate", function(){
+        var e = entries[key]; if(!e || !isFinite(a.duration)) return;
+        var r = a.duration ? a.currentTime / a.duration : 0;
+        if(e.fill) e.fill.style.width = (r*100) + "%";
+        if(e.timeEl) e.timeEl.textContent = fmt(a.currentTime) + " / " + fmt(a.duration);
+      });
+      a.addEventListener("play", function(){
+        var e = entries[key]; if(e){ e.seg.classList.add("playing"); if(e.icP) e.icP.style.display="none"; if(e.icS) e.icS.style.display="block"; }
+        if(playingKey && playingKey !== key){ var o = audios[playingKey]; if(o && !o.paused) o.pause(); }
+        playingKey = key;
+      });
+      a.addEventListener("pause", function(){
+        var e = entries[key]; if(e){ e.seg.classList.remove("playing"); if(e.icP) e.icP.style.display="block"; if(e.icS) e.icS.style.display="none"; }
+        if(playingKey === key && !playAllState) playingKey = null;
+      });
+      a.addEventListener("ended", function(){
+        var e = entries[key]; if(e){ e.seg.classList.remove("playing"); if(e.icP) e.icP.style.display="block"; if(e.icS) e.icS.style.display="none"; if(e.fill) e.fill.style.width="0%"; if(e.timeEl) e.timeEl.textContent="0:00"; }
+        if(playAllState) nextInQueue(key);
+      });
+    }
+    return audios[key];
+  }
+
+  function nextInQueue(cur){
+    var pos = queueOrder.indexOf(cur);
+    if(pos < 0) return;
+    var nxt = queueOrder[(pos + 1) % queueOrder.length];
+    if(nxt === cur){ setPlayAll(false); return; }
+    getAudio(nxt).play();
+  }
+
+  function setPlayAll(on){
+    playAllState = on;
+    var b = document.getElementById("playAll");
+    if(!b) return;
+    b.classList.toggle("playing", on);
+    b.querySelector("span").textContent = on ? "停止连播" : "顺序播放全部 " + queueOrder.length + " 段";
+  }
+
+  function wirePlayer(key, file, seg, opts){
+    opts = opts || {};
+    var btn = seg.querySelector(".playbtn");
+    var track = seg.querySelector(".ptrack");
+    var fill = seg.querySelector(".fill");
+    var timeEl = seg.querySelector(".ptime");
+    if(!btn) return;
+    entries[key] = {seg:seg, btn:btn, fill:fill, timeEl:timeEl, icP:btn.querySelector(".ic-play"), icS:btn.querySelector(".ic-pause")};
+    btn.addEventListener("click", function(){
+      var a = getAudio(key, file);
+      if(a.paused){ if(playAllState) setPlayAll(false); a.play(); }
+      else a.pause();
+    });
+    if(track) track.addEventListener("click", function(e){
+      var a = getAudio(key, file);
+      var r = track.getBoundingClientRect();
+      var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      if(isFinite(a.duration)) a.currentTime = ratio * a.duration;
+    });
+    if(opts.queue) queueOrder.push(key);
+  }
+
+  function wireMini(item, key, file){
+    var btn = item.querySelector(".mbtn");
+    var mt = item.querySelector(".mt");
+    entries[key] = {seg:item, btn:btn, fill:null, timeEl:mt, icP:btn.querySelector(".ic-play"), icS:btn.querySelector(".ic-pause")};
+    btn.addEventListener("click", function(){
+      var a = getAudio(key, file);
+      if(a.paused){ if(playAllState) setPlayAll(false); a.play(); }
+      else a.pause();
+    });
+    getAudio(key, file).addEventListener("timeupdate", function(){
+      if(mt) mt.textContent = fmt(getAudio(key, file).currentTime);
+    });
+  }
+
+  /* ================= 渲染 ================= */
+  function renderLesson(L){
+    var h = '';
+    h += '<div class="view-head"><div class="kicker">' + L.kicker + '</div><h1>' + L.title + '</h1><p>' + L.intro + '</p>';
+    h += '<div class="steps"><div class="step"><span class="n">1</span><div><b>听</b>先听该段音频 2 遍，不看书</div></div><div class="step"><span class="n">2</span><div><b>读</b>看英文出声跟读 2~3 遍</div></div><div class="step"><span class="n">3</span><div><b>说</b>看中文，试着说出英文</div></div><div class="step"><span class="n">4</span><div><b>背</b>合上材料，背出该段</div></div></div>';
+    h += '<button class="playall" id="playAll"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span>顺序播放全部 ' + L.segs.length + ' 段</span></button></div>';
+
+    var PC = L.color || COLORS.spring;
+    if(L.lead){
+      h += '<div class="lead" data-key="' + L.id + '-lead" style="--pc:' + PC + '"><span class="tag">' + L.lead.tag + '</span><div class="en">' + L.lead.en + '</div><div class="cn">' + L.lead.cn + '</div><span class="pill">' + L.lead.phrases[0] + '</span><div class="player"><button class="playbtn" style="background:' + PC + '" aria-label="播放开场段"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><div class="ptrack"><div class="fill" style="background:' + PC + '"></div></div><span class="ptime">0:00</span></div></div>';
+    }
+
+    var seas = ["spring","summer","autumn","winter"];
+    var labels = {spring:"春 · 生命重新开始",summer:"夏 · 明亮又热闹",autumn:"秋 · 色彩最丰富",winter:"冬 · 宁静又有趣"};
+    if(L.groups){
+      L.groups.forEach(function(g){
+        h += '<section class="season"><div class="season-head"><img src="' + A(g.img) + '" alt="' + g.en + '"><div class="season-cap"><div class="en">' + g.en + '</div><div class="cn">' + g.cn + '</div></div></div>';
+        L.segs.filter(function(d){return d.group===g.key;}).forEach(function(d){
+          h += '<div class="seg" data-key="' + L.id + '-' + d.no + '" style="--pc:' + PC + '">';
+          h += '<div class="seg-head"><span class="no" style="background:' + PC + '">' + d.no + '</span><span class="where">' + L.unit + ' 课文 · 第 ' + d.no + ' 段</span></div>';
+          h += '<div class="seg-body"><div class="en">' + d.en + '</div><div class="cn">' + d.cn + '</div>';
+          if(d.phrases.length){ h += '<div class="phrases">' + d.phrases.map(function(p){return '<span>'+p+'</span>';}).join("") + '</div>'; }
+          h += '<div class="player"><button class="playbtn" style="background:' + PC + '" aria-label="播放第 ' + d.no + ' 段"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><div class="ptrack"><div class="fill" style="background:' + PC + '"></div></div><span class="ptime">0:00</span></div></div></div>';
+        });
+        h += '</section>';
+      });
+    } else if(L.imgs){
+      seas.forEach(function(s){
+        h += '<section class="season"><div class="season-head"><img src="' + A(L.imgs[s]) + '" alt="' + s + '"><div class="season-cap"><div class="en">' + s.charAt(0).toUpperCase() + s.slice(1) + '</div><div class="cn">' + labels[s] + '</div></div></div>';
+        L.segs.filter(function(d){return d.season===s;}).forEach(function(d){
+          h += '<div class="seg" data-key="' + L.id + '-' + d.no + '" style="--pc:' + COLORS[s] + '">';
+          h += '<div class="seg-head"><span class="no" style="background:' + COLORS[s] + '">' + d.no + '</span><span class="where">' + s.charAt(0).toUpperCase() + s.slice(1) + ' 第 ' + d.no + ' 段</span></div>';
+          h += '<div class="seg-body"><div class="en">' + d.en + '</div><div class="cn">' + d.cn + '</div>';
+          if(d.phrases.length){ h += '<div class="phrases">' + d.phrases.map(function(p){return '<span>'+p+'</span>';}).join("") + '</div>'; }
+          h += '<div class="player"><button class="playbtn" style="background:' + COLORS[s] + '" aria-label="播放第 ' + d.no + ' 段"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><div class="ptrack"><div class="fill" style="background:' + COLORS[s] + '"></div></div><span class="ptime">0:00</span></div></div></div>';
+        });
+        h += '</section>';
+      });
+    } else {
+      L.segs.forEach(function(d){
+        h += '<div class="seg" data-key="' + L.id + '-' + d.no + '" style="--pc:' + PC + '">';
+        h += '<div class="seg-head"><span class="no" style="background:' + PC + '">' + d.no + '</span><span class="where">' + L.unit + ' 课文 · 第 ' + d.no + ' 段</span></div>';
+        h += '<div class="seg-body"><div class="en">' + d.en + '</div><div class="cn">' + d.cn + '</div>';
+        if(d.phrases.length){ h += '<div class="phrases">' + d.phrases.map(function(p){return '<span>'+p+'</span>';}).join("") + '</div>'; }
+        h += '<div class="player"><button class="playbtn" style="background:' + PC + '" aria-label="播放第 ' + d.no + ' 段"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><div class="ptrack"><div class="fill" style="background:' + PC + '"></div></div><span class="ptime">0:00</span></div></div></div>';
+      });
+    }
+
+    h += '<div class="review"><h2>背完之后，别忘了滚动复习</h2><p>记忆会遗忘，按下面的节奏复习，比反复重背更省力。</p><div class="rev-steps"><div><b>当天睡前</b>回忆一遍今天背的段</div><div><b>次日晨读</b>再过一遍昨天背的段</div><div><b>3 天后</b>全部串背一次</div><div><b>一周后</b>只背记不牢的段</div></div></div>';
+    return h;
+  }
+
+  function renderPhraseList(items, prefix, tag){
+    var h = '<div class="plist">';
+    items.forEach(function(p, i){
+      h += '<div class="pitem' + (p.star ? ' star' : '') + '" data-key="' + prefix + '-' + (i+1) + '">';
+      h += '<span class="pno">' + (tag ? tag : (i+1)) + '</span>';
+      h += '<div class="ptxt"><div class="pen">' + p.en + (p.star ? '<span class="starflag">★ 重点</span>' : '') + '</div><div class="pzh">' + p.zh + '</div>' + (p.note ? '<div class="pzh">' + p.note + '</div>' : '') + '</div>';
+      h += '<div class="miniplayer"><button class="mbtn" aria-label="播放"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><span class="mt">0:00</span></div>';
+      h += '</div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
+  function renderGrammar(g){
+    var h = '';
+    g.forEach(function(card){
+      h += '<div class="grammar-card"><h2>' + card.title + '</h2><div class="gb">';
+      card.rules.forEach(function(r){
+        h += '<div class="grule"><h3><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>' + r.head + '</h3>';
+        r.items.forEach(function(it){
+          h += '<div class="gex"><em>' + it.en + '</em>' + (it.cn ? '　' + it.cn : '') + '</div>';
+        });
+        h += '</div>';
+      });
+      h += '</div></div>';
+    });
+    return h;
+  }
+
+  function renderUnit(unitKey, tab){
+    var U = UNIT_PHRASES[unitKey];
+    var h = '<div class="view-head"><div class="kicker">常用短句 · ' + unitKey + '</div><h1>' + U.label + '</h1><p>跟着音频读，读 3 遍后试着遮住中文说出英文。标注的条目是原卷划的重点，优先背熟。</p></div>';
+    var tabs = [];
+    if(U.phrases && U.phrases.length) tabs.push({k:"phrases", label:"重点短语（' + U.phrases.length + ' 条）"});
+    if(U.sentences && U.sentences.length) tabs.push({k:"sentences", label:"句型 · 语言点（' + U.sentences.length + ' 条）"});
+    if(U.grammar && U.grammar.length) tabs.push({k:"grammar", label:"单元语法"});
+    if(U.model && U.model.items.length) tabs.push({k:"model", label:"范文 · ' + U.model.short + '"});
+    if(!tabs.some(function(x){return x.k === tab;})) tab = tabs[0].k;
+    h += '<div class="tabs">';
+    tabs.forEach(function(t){ h += '<button class="tab' + (tab===t.k?' active':'') + '" data-tab="' + t.k + '">' + t.label + '</button>'; });
+    h += '</div><div id="tabBody">';
+    if(tab === "phrases") h += renderPhraseList(U.phrases, unitKey + "-ph", null);
+    else if(tab === "sentences") h += renderPhraseList(U.sentences, unitKey + "-se", null);
+    else if(tab === "model") h += renderModel(U.model, unitKey);
+    else h += renderGrammar(U.grammar);
+    h += '</div>';
+    return h;
+  }
+
+  function renderModel(m, unitKey){
+    var h = '<div class="model-head"><h2>' + m.title + '</h2><p>' + m.intro + '</p></div>';
+    m.items.forEach(function(d, i){
+      h += '<div class="seg" data-key="' + unitKey + '-model-' + (i+1) + '" style="--pc:#7fbb63">';
+      h += '<div class="seg-head"><span class="no" style="background:#7fbb63">' + (i+1) + '</span><span class="where">范文 · 第 ' + (i+1) + ' 段</span></div>';
+      h += '<div class="seg-body"><div class="en">' + d.en + '</div><div class="cn">' + d.cn + '</div>';
+      if(d.phrases.length){ h += '<div class="phrases">' + d.phrases.map(function(p){return '<span>'+p+'</span>';}).join("") + '</div>'; }
+      h += '<div class="player"><button class="playbtn" style="background:#7fbb63" aria-label="播放范文第 ' + (i+1) + ' 段"><svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="ic-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><div class="ptrack"><div class="fill" style="background:#7fbb63"></div></div><span class="ptime">0:00</span></div></div></div>';
+    });
+    return h;
+  }
+
+  /* ================= 视图切换 ================= */
+  var content = document.getElementById("content");
+
+  function render(view){
+    var body = "";
+    if(view.indexOf("lesson-") === 0){
+      var L = LESSONS.find(function(x){return x.id === view.replace("lesson-","");});
+      body = renderLesson(L);
+    } else if(view.indexOf("unit-") === 0){
+      var u = view.replace("unit-","");
+      body = renderUnit(u, currentTab);
+    }
+    content.innerHTML = body + '<footer>英语背诵 · 初一七年级上册 · 每课每天 1~2 段，一周背完</footer>';
+    currentView = view;
+    setActiveNav();
+    wireAll();
+  }
+
+  function setActiveNav(){
+    document.querySelectorAll(".nav-item").forEach(function(n){ n.classList.toggle("active", n.getAttribute("data-view") === currentView); });
+  }
+
+  function buildNav(){
+    var lh = '';
+    LESSONS.forEach(function(L){
+      lh += '<button class="nav-item" data-view="lesson-' + L.id + '"><svg viewBox="0 0 24 24"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>' + L.unit + '<span class="sub">' + L.titleZh + '</span></button>';
+    });
+    document.getElementById("navLessons").innerHTML = lh;
+
+    var uh = '';
+    Object.keys(UNIT_PHRASES).forEach(function(k){
+      var U = UNIT_PHRASES[k];
+      uh += '<button class="nav-item" data-view="unit-' + k + '"><svg viewBox="0 0 24 24"><path d="M3 12c0-5 3-8 8-8s9 3 9 8-3 7-8 7c-2 0-4-.4-5-1l-4 1 1-3.5c-.6-.8-1-1.9-1-3.5z"/></svg>' + U.label + '<span class="badge">' + (U.phrases.length + (U.sentences ? U.sentences.length : 0)) + '</span></button>';
+    });
+    document.getElementById("navUnits").innerHTML = uh;
+  }
+
+  function wireAll(){
+    var keys = Object.keys(entries);
+    keys.forEach(function(k){ delete entries[k]; });
+    queueOrder = [];
+
+    if(currentView && currentView.indexOf("lesson-") === 0){
+      var L = LESSONS.find(function(x){return x.id === currentView.replace("lesson-","");});
+      document.querySelectorAll(".lead, .seg").forEach(function(seg){
+        var key = seg.getAttribute("data-key");
+        var file = null;
+        if(L.lead && key === L.id + "-lead") file = L.lead.file;
+        else { var n = parseInt(key.split("-")[1],10); var d = L.segs.find(function(x){return x.no===n;}); if(d) file = d.file; }
+        if(file) wirePlayer(key, file, seg, {queue:true});
+      });
+      var playAll = document.getElementById("playAll");
+      if(playAll) playAll.addEventListener("click", function(){
+        if(playAllState){
+          Object.keys(audios).forEach(function(k){ audios[k].pause(); });
+          setPlayAll(false);
+          return;
+        }
+        if(!queueOrder.length) return;
+        setPlayAll(true);
+        var a = getAudio(queueOrder[0]); a.play();
+      });
+    } else if(currentView && currentView.indexOf("unit-") === 0){
+      var u = currentView.replace("unit-","");
+      if(currentTab === "grammar") return;
+      if(currentTab === "model"){
+        var m = UNIT_PHRASES[u].model;
+        document.querySelectorAll(".seg").forEach(function(seg){
+          var key = seg.getAttribute("data-key");
+          var i = parseInt(key.split("-").pop(), 10) - 1;
+          if(!m.items[i]) return;
+          wirePlayer(key, m.items[i].file, seg, {queue:false});
+        });
+        return;
+      }
+      var list = currentTab === "phrases" ? UNIT_PHRASES[u].phrases : UNIT_PHRASES[u].sentences;
+      document.querySelectorAll(".pitem").forEach(function(it){
+        var key = it.getAttribute("data-key");
+        var i = parseInt(key.split("-").pop(), 10) - 1;
+        if(!list[i]) return;
+        wireMini(it, key, list[i].file);
+      });
+    }
+  }
+
+  /* ================= 导航 / 交互 ================= */
+  document.addEventListener("click", function(e){
+    var n = e.target.closest(".nav-item");
+    if(n){ render(n.getAttribute("data-view")); document.body.classList.remove("nav-open"); }
+  });
+  document.getElementById("hamburger").addEventListener("click", function(){ document.body.classList.toggle("nav-open"); });
+  document.getElementById("scrim").addEventListener("click", function(){ document.body.classList.remove("nav-open"); });
+
+  content.addEventListener("click", function(e){
+    var t = e.target.closest(".tab");
+    if(t){
+      currentTab = t.getAttribute("data-tab");
+      var u = currentView.replace("unit-","");
+      content.innerHTML = renderUnit(u, currentTab) + '<footer>英语背诵 · 初一七年级上册 · 每课每天 1~2 段，一周背完</footer>';
+      wireAll();
+    }
+  });
+
+  buildNav();
+  render("lesson-" + LESSONS[0].id);
+})();
+</script>
+<!-- 静态资源登记：供发布链路识别，视觉上隐藏（四季图由 JS 动态渲染，此声明保证发布时资源被携带） -->
+<div style="display:none" aria-hidden="true">
+  <img src="assets/spring.jpg" alt="">
+  <img src="assets/summer.jpg" alt="">
+  <img src="assets/autumn.jpg" alt="">
+  <img src="assets/winter.jpg" alt="">
+  <img src="assets/u1-g1.jpg" alt="">
+  <img src="assets/u1-g2.jpg" alt="">
+  <img src="assets/u1-g3.jpg" alt="">
+  <img src="assets/u2-g1.jpg" alt="">
+  <img src="assets/u2-g2.jpg" alt="">
+  <img src="assets/u2-g3.jpg" alt="">
+  <img src="assets/u2-g4.jpg" alt="">
+</div>
+</body>
+</html>
